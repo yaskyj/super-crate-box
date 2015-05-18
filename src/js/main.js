@@ -8,6 +8,7 @@ window.onload = function () {
       game.load.image('player', 'assets/player.png');
       game.load.image('wallV', 'assets/wallVertical.png');
       game.load.image('wallH', 'assets/wallHorizontal.png');
+      game.load.image('coin', 'assets/coin.png');
     },
 
     create: function() {
@@ -19,6 +20,12 @@ window.onload = function () {
       this.player.body.gravity.y = 500;
       this.cursor = game.input.keyboard.createCursorKeys();
       this.createWorld();
+      this.coin = game.add.sprite(60, 140, 'coin');
+      game.physics.arcade.enable(this.coin);
+      this.coin.anchor.setTo(0.5, 0.5);
+      this.scoreLabel = game.add.text(30, 30, 'score: 0',
+        {font: '18px Arial', fill: '#fff'});
+      this.score = 0;
     },
 
     update: function() {
@@ -27,6 +34,7 @@ window.onload = function () {
       if (!this.player.inWorld) {
         this.playerDie();
       }
+      game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
     },
 
     movePlayer: function() {
@@ -66,8 +74,34 @@ window.onload = function () {
 
     playerDie: function () {
       game.state.start('main');
+    },
+
+    takeCoin: function (player, coin) {
+      this.score += 5;
+      this.scoreLabel.text = 'score: ' + this.score;
+      this.updateCoinPosition();
+    },
+
+    updateCoinPosition: function() {
+    // Store all the possible coin positions in an array
+     var coinPosition = [
+      {x: 140, y: 60}, {x: 360, y: 60}, // Top row
+      {x: 60, y: 140}, {x: 440, y: 140}, // Middle row
+      {x: 130, y: 300}, {x: 370, y: 300} // Bottom row
+      ];
+    // Remove the current coin position from the array
+    // Otherwise the coin could appear at the same spot twice in a row
+      for (var i = 0; i < coinPosition.length; i++) {
+        if (coinPosition[i].x === this.coin.x) {
+          coinPosition.splice(i, 1);
+        }
+      }
+    // Randomly select a position from the array
+    var newPosition = coinPosition[ game.rnd.integerInRange(0, coinPosition.length-1)];
+    // Set the new position of the coin
+    this.coin.reset(newPosition.x, newPosition.y);
     }
-  };
+};
 
   game = new Phaser.Game(500, 340, Phaser.AUTO, 'super-crate-box-game');
   game.state.add('main', mainState);
