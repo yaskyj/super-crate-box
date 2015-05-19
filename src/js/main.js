@@ -9,6 +9,7 @@ window.onload = function () {
       game.load.image('wallV', 'assets/wallVertical.png');
       game.load.image('wallH', 'assets/wallHorizontal.png');
       game.load.image('coin', 'assets/coin.png');
+      game.load.image('enemy', 'assets/enemy.png');
     },
 
     create: function() {
@@ -26,6 +27,10 @@ window.onload = function () {
       this.scoreLabel = game.add.text(30, 30, 'score: 0',
         {font: '18px Arial', fill: '#fff'});
       this.score = 0;
+      this.enemies = game.add.group();
+      this.enemies.enableBody = true;
+      this.enemies.createMultiple(10, 'enemy');
+      game.time.events.loop(2200, this.addEnemy, this);
     },
 
     update: function() {
@@ -35,6 +40,8 @@ window.onload = function () {
         this.playerDie();
       }
       game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
+      game.physics.arcade.collide(this.enemies, this.walls);
+      game.physics.arcade.overlap(this.player, this.enemies, this.playerDie, null, this);
     },
 
     movePlayer: function() {
@@ -76,7 +83,7 @@ window.onload = function () {
       game.state.start('main');
     },
 
-    takeCoin: function (player, coin) {
+    takeCoin: function () {
       this.score += 5;
       this.scoreLabel.text = 'score: ' + this.score;
       this.updateCoinPosition();
@@ -100,7 +107,23 @@ window.onload = function () {
     var newPosition = coinPosition[ game.rnd.integerInRange(0, coinPosition.length-1)];
     // Set the new position of the coin
     this.coin.reset(newPosition.x, newPosition.y);
-    }
+    },
+
+    addEnemy: function() {
+      // Get the first dead enemy of the group
+      var enemy = this.enemies.getFirstDead();
+      // If there isn't any dead enemy, do nothing
+      if (!enemy) {
+        return;
+      }
+      // Initialise the enemy
+      enemy.anchor.setTo(0.5, 1);
+      enemy.reset(game.world.centerX, 0);
+      enemy.body.gravity.y = 500;
+      enemy.body.velocity.x = 100 * Phaser.Math.randomSign();
+      enemy.body.bounce.x = 1;
+      enemy.checkWorldBounds = true;
+      enemy.outOfBoundsKill = true; }
 };
 
   game = new Phaser.Game(500, 340, Phaser.AUTO, 'super-crate-box-game');
