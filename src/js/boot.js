@@ -1,5 +1,5 @@
 'use strict';
-var booState = {
+var bootState = {
   preload: function () {
     game.load.image('progressBar', 'assets/progressBar.png');
   },
