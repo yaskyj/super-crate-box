@@ -1,35 +1,12 @@
-(function () {
-  'use strict';
+'use strict';
+var booState = {
+  preload: function () {
+    game.load.image('progressBar', 'assets/progressBar.png');
+  },
 
-  function Boot() {}
-
-  Boot.prototype = {
-    
-    preload: function () {
-      this.load.image('preloader', 'assets/preloader.gif');
-    },
-
-    create: function () {
-      this.game.input.maxPointers = 1;
-
-      if (this.game.device.desktop) {
-        this.game.scale.pageAlignHorizontally = true;
-      } else {
-        this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        this.game.scale.minWidth =  480;
-        this.game.scale.minHeight = 260;
-        this.game.scale.maxWidth = 640;
-        this.game.scale.maxHeight = 480;
-        this.game.scale.forceOrientation(true);
-        this.game.scale.pageAlignHorizontally = true;
-        this.game.scale.setScreenSize(true);
-      }
-      this.game.state.start('preloader');
-    }
-  };
-
-  window['super-crate-box'] = window['super-crate-box'] || {};
-  window['super-crate-box'].Boot = Boot;
-
-}());
-
+  create: function() {
+    game.stage.backgroundColor = '#3498db';
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.state.start('load');
+  }
+};

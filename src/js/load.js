@@ -1,43 +1,21 @@
-(function() {
-  'use strict';
+'use strice';
+var loadState = {
+  preload: function () {
+    var loadingLabel = game.add.text(game.world.centerX, 150, 'loading...', {font: '30px Arial', fill: '#ffffff'});
+    loadingLabel.anchor.setTo(0.5, 0.5);
 
-  function Preloader() {
-    this.asset = null;
-    this.ready = false;
+    var progressBar = game.add.sprite(game.world.centerX, 200, 'progressBar');
+    progressBar.anchor.setTo(0.5, 0.5);
+    game.load.setPreloadSprite(progressBar);
+    game.load.image('player', 'assets/player.png');
+    game.load.image('enemy', 'assets/enemy.png');
+    game.load.image('coin', 'assets/coin.png');
+    game.load.image('wallV', 'assets/wallVertical.png');
+    game.load.image('wallH', 'assets/wallHorizontal.png');
+    game.load.image('background', 'assets/background.png');
+  },
+
+  create: function() {
+    game.state.start('menu');
   }
-
-  Preloader.prototype = {
-
-    preload: function () {
-      this.asset = this.add.sprite(this.game.width * 0.5 - 110, this.game.height * 0.5 - 10, 'preloader');
-
-      this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
-      this.load.setPreloadSprite(this.asset);
-      
-      this.loadResources();
-    },
-      
-    loadResources: function () {
-      this.load.image('player', 'assets/player.png');
-      this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');
-    },
-
-    create: function () {
-      this.asset.cropEnabled = false;
-    },
-
-    update: function () {
-      if (!!this.ready) {
-        this.game.state.start('menu');
-      }
-    },
-
-    onLoadComplete: function () {
-      this.ready = true;
-    }
-  };
-
-  window['super-crate-box'] = window['super-crate-box'] || {};
-  window['super-crate-box'].Preloader = Preloader;
-
-}());
+};
