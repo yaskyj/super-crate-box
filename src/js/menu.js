@@ -1,40 +1,29 @@
-(function() {
-  'use strict';
+'use strict';
+var menuState = {
+  create: function() {
+    game.add.image(0, 0, 'background');
 
-  function Menu() {
-    this.titleTxt = null;
-    this.startTxt = null;
+    var nameLabel = game.add.text(game.world.centerX, 80, 'Super Coin Box', {font: '50px Arial', fill: '#ffffff'});
+    nameLabel.anchor.setTo(0.5, 0.5);
+
+    var scoreLabel = game.add.text(game.world.centerX, game.world.centerY, 'score: ' + game.global.score, {
+      font: '25px Arial',
+      fill: '#ffffff'
+    });
+    scoreLabel.anchor.setTo(0.5, 0.5);
+
+    var startLabel = game.add.text(game.world.centerX, game.world.height - 80, 'press the up arrow key to start', {
+      font: '25px Arial',
+      fill: '#ffffff'
+    });
+    startLabel.anchor.setTo(0.5, 0.5);
+
+    var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+
+    upKey.onDown.addOnce(this.start, this);
+  },
+
+  start: function() {
+    game.state.start('play');
   }
-
-  Menu.prototype = {
-
-    create: function () {
-      var x = this.game.width / 2
-        , y = this.game.height / 2;
-
-
-      this.titleTxt = this.add.bitmapText(x, y, 'minecraftia', 'Example Game' );
-      this.titleTxt.align = 'center';
-      this.titleTxt.x = this.game.width / 2 - this.titleTxt.textWidth / 2;
-
-      y = y + this.titleTxt.height + 5;
-      this.startTxt = this.add.bitmapText(x, y, 'minecraftia', 'START');
-      this.startTxt.align = 'center';
-      this.startTxt.x = this.game.width / 2 - this.startTxt.textWidth / 2;
-
-      this.input.onDown.add(this.onDown, this);
-    },
-
-    update: function () {
-
-    },
-
-    onDown: function () {
-      this.game.state.start('game');
-    }
-  };
-
-  window['super-crate-box'] = window['super-crate-box'] || {};
-  window['super-crate-box'].Menu = Menu;
-
-}());
+};
